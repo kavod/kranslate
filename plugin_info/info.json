@@ -1,0 +1,16 @@
+{
+	"id" : "kranslate",
+	"name" : "Kranslate",
+	"description" : "Plugin destiné au développeurs assistant la traduction des plugins Jeedom",
+	"licence" : "AGPL",
+	"author" : "kavod",
+	"require" : "3.3",
+	"category" : "programming",
+	"hasDependency" : false,
+	"hasOwnDeamon" : false,
+	"maxDependancyInstallTime" : 1,
+	"changelog" : "https://kavod.github.io/kranslate/#language#/changelog",
+	"documentation" : "https://kavod.github.io/kranslate/#language#/",
+	"language" : ["fr_FR","en_US"],
+	"compatibility" : ["miniplus","smart","rpi","diy","mobile","v4"]
+}

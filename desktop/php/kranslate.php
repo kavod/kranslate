@@ -78,14 +78,14 @@ if (!isConnect('admin')) {
      <a class="btn btn-default eqLogicAction pull-right" data-action="configure"><i class="fa fa-cogs"></i> {{Configuration avancée}}</a>
      <ul class="nav nav-tabs" role="tablist">
        <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
-       <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Equipement}}</a></li>
-       <li role="presentation"><a href="#commandtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Commandes}}</a></li>
+       <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Plugin}}</a></li>
+       <li role="presentation"><a href="#tradtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Traductions}}</a></li>
      </ul>
      <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
        <div role="tabpanel" class="tab-pane active" id="eqlogictab">
          <br/>
          <div class="col-lg-2">
-           <img id="eqLogic_img" height="172" width="150" />
+
          </div>
          <div class="col-lg-6">
            <form class="form-horizontal">
@@ -94,29 +94,37 @@ if (!isConnect('admin')) {
                    <label class="col-sm-4 control-label">{{Nom du plugin}}</label>
                    <div class="col-sm-8">
                        <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
-                       <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement}}"/>
+                       <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom du plugin}}"/>
                    </div>
                </div>
+ 							<?php
+ 							if (intval(log::getLogLevel('kkasa')) <=100)
+ 							{
+ 								?>
+ 							<div class="form-group">
+ 								 <label class="col-sm-4 control-label">{{Auteur}}</label>
+ 								 <div class="col-sm-8">
+ 										<input disabled class="eqLogicAttr configuration form-control" data-l1key="configuration" data-l2key="author"/>
+ 								 </div>
+ 							</div>
+            <?php } ?>
              </fieldset>
-           </form>
-         </div>
-       </div>
-       <div role="tabpanel" class="tab-pane" id="commandtab">
-         <a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/><br/>
-         <table id="table_cmd" class="table table-bordered table-condensed">
-           <thead>
-             <tr>
-               <th>{{Nom}}</th>
-               <th>{{Type}}</th>
-               <th>{{Paramètres}}</th>
-               <th>{{Options}}</th>
-               <th>{{Action}}</th>
-             </tr>
-           </thead>
-           <tbody>
-           </tbody>
-         </table>
-       </div>
+ 					</form>
+ 				</div>
+ 			</div>
+ 			<div role="tabpanel" class="tab-pane" id="tradtab">
+        <table id="table_trad" class="table table-bordered table-condensed">
+					<thead>
+						<tr>
+							<th>{{Français}}</th>
+							<th>{{Anglais}}</th>
+							<th>{{Inutilisé ?}}</th>
+							<th>{{Supprimer}}</th>
+						</tr>
+					</thead>
+					<tbody>
+					</tbody>
+				</table>
      </div>
    </div>
    <?php include_file('desktop', 'kranslate', 'js', 'kranslate');?>

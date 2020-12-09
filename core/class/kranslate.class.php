@@ -26,7 +26,31 @@ ini_set('display_errors', 'On');
 
 
   class kranslate extends eqLogic {
+    public static function getPluginList()
+    {
+      $plugins = plugin::listPlugin($_activateOnly = true, $_orderByCaterogy = false, $_translate = true, $_nameOnly = true);
+      log::add(__CLASS__,'debug',"Plugin List: ".print_r($plugins,true));
+      return $plugins;
+    }
 
+    public static function addPlugin($plugin)
+    {
+      $eqLogicalId = $plugin;
+
+      $plugin_data = plugin::byId($eqLogicalId);
+
+      $eqLogic = kkasa::byLogicalId($eqLogicalId, __CLASS__);
+      if (!is_object($eqLogic)) {
+        $eqLogic = new self();
+        $eqLogic->setLogicalId($eqLogicalId);
+        $eqLogic->setName($plugin_data->getName());
+        $eqLogic->setConfiguration('author', $plugin_data->getAuthor());
+				$eqLogic->setEqType_name(__CLASS__);
+				$eqLogic->setIsVisible(0);
+				$eqLogic->setIsEnable(1);
+				$eqLogic->save();
+      }
+    }
   }
 
   class kranslateCmd extends cmd {

@@ -19,6 +19,7 @@
  */
  error_reporting(-1);
  ini_set('display_errors', 'On');
+ $kranslate_conf = json_decode(file_get_contents(__DIR__.'/../../core/config/lang.json'),true);
 
 if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
@@ -79,7 +80,15 @@ if (!isConnect('admin')) {
      <ul class="nav nav-tabs" role="tablist">
        <li role="presentation"><a href="#" class="eqLogicAction" aria-controls="home" role="tab" data-toggle="tab" data-action="returnToThumbnailDisplay"><i class="fa fa-arrow-circle-left"></i></a></li>
        <li role="presentation" class="active"><a href="#eqlogictab" aria-controls="home" role="tab" data-toggle="tab"><i class="fa fa-tachometer"></i> {{Plugin}}</a></li>
-       <li role="presentation"><a href="#tradtab" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Traductions}}</a></li>
+       <?php foreach($kranslate_conf as $lang)
+       {
+         if (config::byKey($lang['code'],'kranslate',0) == 1)
+         {
+           ?>
+       <li role="presentation"><a href="#tradtab_<?php echo $lang['code']; ?>" aria-controls="profile" role="tab" data-toggle="tab"><i class="fa fa-list-alt"></i> {{Traduction}} <?php echo $lang['short']; ?></a></li>
+     <?php
+          }
+        } ?>
      </ul>
      <div class="tab-content" style="height:calc(100% - 50px);overflow:auto;overflow-x: hidden;">
        <div role="tabpanel" class="tab-pane active" id="eqlogictab">
@@ -98,7 +107,7 @@ if (!isConnect('admin')) {
                    </div>
                </div>
  							<?php
- 							if (intval(log::getLogLevel('kkasa')) <=100)
+ 							if (intval(log::getLogLevel('kranslate')) <=100)
  							{
  								?>
  							<div class="form-group">
@@ -112,12 +121,17 @@ if (!isConnect('admin')) {
  					</form>
  				</div>
  			</div>
- 			<div role="tabpanel" class="tab-pane" id="tradtab">
+      <?php foreach($kranslate_conf as $lang)
+      {
+        if (config::byKey($lang['code'],'kranslate',0) == 1)
+        {
+          ?>
+ 			<div role="tabpanel" class="tab-pane" id="tradtab_<?php echo $lang['code']; ?>">
         <table id="table_trad" class="table table-bordered table-condensed">
 					<thead>
 						<tr>
 							<th>{{Français}}</th>
-							<th>{{Anglais}}</th>
+							<th><?php echo $lang['label']; ?></th>
 							<th>{{Inutilisé ?}}</th>
 							<th>{{Supprimer}}</th>
 						</tr>
@@ -126,5 +140,9 @@ if (!isConnect('admin')) {
 					</tbody>
 				</table>
      </div>
+   <?php
+        }
+      } ?>
    </div>
    <?php include_file('desktop', 'kranslate', 'js', 'kranslate');?>
+   <?php include_file('core', 'plugin.template', 'js');?>

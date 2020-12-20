@@ -23,4 +23,16 @@
 require_once(__DIR__  . '/../../../../core/php/core.inc.php');
 
 define('KRANSLATE_VERSION','0.1');
+$kranslate_conf = json_decode(file_get_contents(__DIR__.'/../config/lang.json'),true);
+// $kranslate_conf = array(
+//   array('code' =>'en_US', 'label' => __("Anglais",__FILE__),  'short' => 'EN'),
+//   array('code' =>'de_DE', 'label' => __("Allemand",__FILE__), 'short' => 'DE'),
+//   array('code' =>'es_ES', 'label' => __("Espagnol",__FILE__), 'short' => 'ES'),
+//   array('code' =>'it_IT', 'label' => __("Italien",__FILE__),  'short' => 'IT'),
+//   array('code' =>'pt_PT', 'label' => __("Portugais",__FILE__),'short' => 'PT'),
+//   array('code' =>'ru_RU', 'label' => __("Russe",__FILE__),    'short' => 'RU'),
+//   array('code' =>'ja_JP', 'label' => __("Japonais",__FILE__), 'short' => 'JP'),
+//   array('code' =>'id_ID', 'label' => __("Indonésien",__FILE__),'short' => 'ID'),
+//   array('code' =>'tr',    'label' => __("Turc",__FILE__),     'short' => 'TR')
+// );
 ?>

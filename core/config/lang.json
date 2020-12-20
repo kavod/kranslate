@@ -1,0 +1,11 @@
+[
+{"code":"en_US", "label":"Anglais",  "short": "EN"},
+{"code":"de_DE", "label":"Allemand", "short": "DE"},
+{"code":"es_ES", "label":"Espagnol", "short": "ES"},
+{"code":"it_IT", "label":"Italien",  "short": "IT"},
+{"code":"pt_PT", "label":"Portugais","short": "PT"},
+{"code":"ru_RU", "label":"Russe",    "short": "RU"},
+{"code":"ja_JP", "label":"Japonais", "short": "JP"},
+{"code":"id_ID", "label":"Indonésien","short": "ID"},
+{"code":"tr",    "label":"Turc",     "short": "TR"}
+]

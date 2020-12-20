@@ -21,6 +21,7 @@
  ini_set('display_errors', 'On');
 
  require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+ require_once dirname(__FILE__) . '/../core/php/kranslate.inc.php';
  include_file('core', 'authentification', 'php');
  if (!isConnect()) {
      include_file('desktop', '404', 'php');
@@ -29,60 +30,15 @@
  ?>
  <form class="form-horizontal">
    <fieldset>
+     <?php foreach($kranslate_conf as $lang)
+     { ?>
      <div class="form-group">
-         <label class="col-sm-4 control-label">{{Anglais}}</label>
+         <label class="col-sm-4 control-label"><?php echo $lang['label']; ?></label>
          <div class="col-lg-2">
-           <input type="checkbox" data-l1key="en_US" class="form-control configKey" />
+           <input type="checkbox" data-l1key="<?php echo $lang['code']; ?>" class="form-control configKey" />
          </div>
      </div>
-     <div class="form-group">
-         <label class="col-sm-4 control-label">{{Allemand}}</label>
-         <div class="col-lg-2">
-           <input type="checkbox" data-l1key="de_DE"  class="form-control configKey" />
-         </div>
-     </div>
-     <div class="form-group">
-         <label class="col-sm-4 control-label">{{Espagnol}}</label>
-         <div class="col-lg-2">
-           <input type="checkbox" data-l1key="es_ES"  class="form-control configKey" />
-         </div>
-     </div>
-     <div class="form-group">
-         <label class="col-sm-4 control-label">{{Italien}}</label>
-         <div class="col-lg-2">
-           <input type="checkbox" data-l1key="it_IT"  class="form-control configKey" />
-         </div>
-     </div>
-     <div class="form-group">
-         <label class="col-sm-4 control-label">{{Portugais}}</label>
-         <div class="col-lg-2">
-           <input type="checkbox" data-l1key="pt_PT"  class="form-control configKey" />
-         </div>
-     </div>
-     <div class="form-group">
-         <label class="col-sm-4 control-label">{{Russe}}</label>
-         <div class="col-lg-2">
-           <input type="checkbox" data-l1key="ru_RU"  class="form-control configKey" />
-         </div>
-     </div>
-     <div class="form-group">
-         <label class="col-sm-4 control-label">{{Japonnais}}</label>
-         <div class="col-lg-2">
-           <input type="checkbox" data-l1key="ja_JP"  class="form-control configKey" />
-         </div>
-     </div>
-     <div class="form-group">
-         <label class="col-sm-4 control-label">{{Indonésien}}</label>
-         <div class="col-lg-2">
-           <input type="checkbox" data-l1key="id_ID"  class="form-control configKey" />
-         </div>
-     </div>
-     <div class="form-group">
-         <label class="col-sm-4 control-label">{{Turc}}</label>
-         <div class="col-lg-2">
-           <input type="checkbox" data-l1key="tr"  class="form-control configKey" />
-         </div>
-     </div>
+   <?php } ?>
    </fieldset>
 </form>
 <?php include_file('desktop', 'kranslate', 'js', 'kranslate');?>

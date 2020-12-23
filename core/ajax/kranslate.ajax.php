@@ -34,6 +34,38 @@
     kranslate::addPlugin(init('plugin'));
     ajax::success();
   }
+  elseif(init('action') == 'scan') {
+    $plugin = eqLogic::byLogicalId(init('plugin'),'kranslate');
+    $plugin->initTrad();
+    ajax::success();
+  }
+  elseif(init('action') == 'deleteTrad') {
+    $plugin = eqLogic::byLogicalId(init('plugin'),'kranslate');
+    $plugin->deleteTrad();
+    ajax::success();
+  }
+  elseif(init('action') == 'selectTrad') {
+    $plugin = eqLogic::byLogicalId(init('plugin'),'kranslate');
+    $result = $plugin->selectTrad();
+    ajax::success($result);
+  }
+  elseif(init('action') == 'langConf') {
+    $kranslate_conf = json_decode(file_get_contents(__DIR__.'/../../core/config/lang.json'),true);
+    ajax::success($kranslate_conf);
+  }
+  elseif(init('action') == 'saveTrad') {
+    $kranslate_conf = json_decode(file_get_contents(__DIR__.'/../../core/config/lang.json'),true);
+    $plugin = eqLogic::byLogicalId(init('plugin'),'kranslate');
+    // $lang = init('lang');
+    $trad_arr = array();
+    $trad_form = json_decode(init('trad'),true);
+    log::add('kranslate','debug',print_r($trad_form,true));
+    foreach($kranslate_conf as $lang)
+    {
+      $plugin->saveTrad($lang['code'],$trad_form[$lang['code']]);
+    }
+    ajax::success();
+  }
 
   throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
   /*     * *********Catch exeption*************** */

@@ -1,0 +1,20 @@
+.kTrad {
+  border-bottom: thin solid;
+}
+
+.kTradLine {
+  overflow-wrap: break-word;
+}
+
+.kTradHide {
+  display:none;
+}
+
+.kTradFilePath {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.kTradHeader {
+  font-weight: bold;
+}

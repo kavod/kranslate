@@ -24,6 +24,7 @@
 if (!isConnect('admin')) {
     throw new Exception('{{401 - Accès non autorisé}}');
   }
+  include_file('plugins/kranslate/desktop', 'kranslate', 'css');
   $plugin = plugin::byId('kranslate');
   sendVarToJS('eqType', $plugin->getId());
   $eqLogics = eqLogic::byType($plugin->getId());
@@ -49,11 +50,16 @@ if (!isConnect('admin')) {
       <!-- Boutons de gestion -->
       <legend><i class="fa fa-cog"></i>  {{Gestion}}</legend>
       <div class="eqLogicThumbnailContainer">
-       <div class="cursor eqLogicAction" id="btAdd" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
-         <i class="fa fa-plus" style="font-size : 6em;color:#767676;"></i>
-         <br />
-         <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Ajouter un plugin}}</span>
-       </div>
+        <div class="cursor eqLogicAction" id="btAdd" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
+          <i class="fa fa-plus" style="font-size : 6em;color:#767676;"></i>
+          <br />
+          <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Ajouter un plugin}}</span>
+        </div>
+        <div class="cursor eqLogicAction" data-action="gotoPluginConf" style="text-align: center; background-color : #ffffff; height : 120px;margin-bottom : 10px;padding : 5px;border-radius: 2px;width : 160px;margin-left : 10px;">
+          <i class="fa fa-wrench" style="font-size : 6em;color:#767676;"></i>
+          <br />
+          <span style="font-size : 1.1em;position:relative; top : 15px;word-break: break-all;white-space: pre-wrap;word-wrap: break-word;color:#767676">{{Configuration}}</span>
+        </div>
      </div>
 
      <!-- Liste des plugins -->
@@ -74,7 +80,8 @@ if (!isConnect('admin')) {
 
    <!-- Vue équipement -->
    <div class="col-lg-10 col-md-9 col-sm-8 eqLogic" style="border-left: solid 1px #EEE; padding-left: 25px;display: none;">
-     <a class="btn btn-success eqLogicAction pull-right" data-action="save"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
+     <a class="btn btn-success eqLogicAction pull-right" data-action="save" style="display:none;"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
+    <a class="btn btn-success eqLogicAction pull-right" id="btSave"><i class="fa fa-check-circle"></i> {{Sauvegarder}}</a>
      <a class="btn btn-danger eqLogicAction pull-right" data-action="remove"><i class="fa fa-minus-circle"></i> {{Supprimer}}</a>
      <a class="btn btn-default eqLogicAction pull-right" data-action="configure"><i class="fa fa-cogs"></i> {{Configuration avancée}}</a>
      <ul class="nav nav-tabs" role="tablist">
@@ -103,6 +110,7 @@ if (!isConnect('admin')) {
                    <label class="col-sm-4 control-label">{{Nom du plugin}}</label>
                    <div class="col-sm-8">
                        <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
+                       <input type="text" class="eqLogicAttr form-control" data-l1key="logicalId" style="display : none;" />
                        <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom du plugin}}"/>
                    </div>
                </div>
@@ -120,6 +128,10 @@ if (!isConnect('admin')) {
              </fieldset>
  					</form>
  				</div>
+        <div class="col-lg-6">
+          <a class="btn btn-default" id="btScan"><i class="fa fa-search"></i> {{Scanner les traductions}}</a>
+          <a class="btn btn-danger" id="btDelete"><i class="fa fa-trash"></i> {{Supprimer toutes les traductions}}</a>
+        </div>
  			</div>
       <?php foreach($kranslate_conf as $lang)
       {
@@ -127,18 +139,16 @@ if (!isConnect('admin')) {
         {
           ?>
  			<div role="tabpanel" class="tab-pane" id="tradtab_<?php echo $lang['code']; ?>">
-        <table id="table_trad" class="table table-bordered table-condensed">
-					<thead>
-						<tr>
-							<th>{{Français}}</th>
-							<th><?php echo $lang['label']; ?></th>
-							<th>{{Inutilisé ?}}</th>
-							<th>{{Supprimer}}</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
+        <form id="table_trad_<?php echo $lang['code']; ?>" class="form-horizontal">
+					<div class="form-group">
+            <span class="col-lg-1 kTradHeader">{{ID}}</span>
+						<span class="col-lg-5 kTradHeader">{{Français}}</span>
+						<span class="col-lg-5 kTradHeader"><?php echo $lang['label']; ?></span>
+						<span class="col-lg-1 kTradHeader">{{Inutilisé ?}} {{Supprimer}}</span>
+					</div>
+    			<fieldset>
+					</fieldset>
+        </form>
      </div>
    <?php
         }

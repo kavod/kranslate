@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+ var langConf = [];
 
  function addPlugin(plugin)
  {
@@ -80,6 +81,38 @@
     });
   }
 
+  function selectTrad(plugin)
+  {
+     $.ajax({// fonction permettant de faire de l'ajax
+       type: "POST", // methode de transmission des données au fichier php
+       url: "plugins/kranslate/core/ajax/kranslate.ajax.php", // url du fichier php
+       data: {
+           action: "selectTrad",
+           plugin: plugin
+       },
+       dataType: 'json',
+       error: function (request, status, error) {
+           handleAjaxError(request, status, error);
+       },
+       success: function (data) { // si l'appel a bien fonctionné
+         if (data.state != 'ok') {
+             $('#div_alert').showAlert({message: data.result, level: 'danger'});
+             return;
+         }
+        deleteAllTrad();
+        file_path = '';
+        data.result.forEach(function(sentence) {
+          if (sentence.file_path!=file_path)
+          {
+            addFilePath(sentence.lang,sentence.file_path);
+            file_path = sentence.file_path;
+          }
+          addTrad(sentence);
+        });
+       }
+     });
+  }
+
   $('#btAdd').on('click', function () {
    $.ajax({// fonction permettant de faire de l'ajax
        type: "POST", // methode de transmission des données au fichier php
@@ -101,4 +134,145 @@
          choosePlugin(json);
        }
      });
+  });
+
+  $('#btScan').on('click', function () {
+  plugin = $(".eqLogicAttr[data-l1key='logicalId']").val();
+   $.ajax({// fonction permettant de faire de l'ajax
+       type: "POST", // methode de transmission des données au fichier php
+       url: "plugins/kranslate/core/ajax/kranslate.ajax.php", // url du fichier php
+       data: {
+           action: "scan",
+           plugin: plugin
+       },
+       dataType: 'json',
+       error: function (request, status, error) {
+           handleAjaxError(request, status, error);
+       },
+       success: function (data) { // si l'appel a bien fonctionné
+         if (data.state != 'ok') {
+             $('#div_alert').showAlert({message: data.result, level: 'danger'});
+             return;
+         }
+         selectTrad(plugin);
+       }
+     });
+  });
+
+  $('#btDelete').on('click', function () {
+   $.ajax({// fonction permettant de faire de l'ajax
+       type: "POST", // methode de transmission des données au fichier php
+       url: "plugins/kranslate/core/ajax/kranslate.ajax.php", // url du fichier php
+       data: {
+           action: "deleteTrad",
+           plugin: $(".eqLogicAttr[data-l1key='logicalId']").val()
+       },
+       dataType: 'json',
+       error: function (request, status, error) {
+           handleAjaxError(request, status, error);
+       },
+       success: function (data) { // si l'appel a bien fonctionné
+         if (data.state != 'ok') {
+             $('#div_alert').showAlert({message: data.result, level: 'danger'});
+             return;
+         }
+         deleteAllTrad();
+       }
+     });
+  });
+
+  $('#btSave').on('click',function() {
+    var trad = {};
+    langConf.forEach( function( val ) {
+      trad[val.code] = $('#table_trad_'+val.code+' .kTrad').getValues('.tradAttr');
+    });
+   $.ajax({// fonction permettant de faire de l'ajax
+       type: "POST", // methode de transmission des données au fichier php
+       url: "plugins/kranslate/core/ajax/kranslate.ajax.php", // url du fichier php
+       data: {
+           action: "saveTrad",
+           plugin: $(".eqLogicAttr[data-l1key='logicalId']").val(),
+           trad: json_encode(trad)
+       },
+       dataType: 'json',
+       error: function (request, status, error) {
+           handleAjaxError(request, status, error);
+       },
+       success: function (data) { // si l'appel a bien fonctionné
+         if (data.state != 'ok') {
+             $('#div_alert').showAlert({message: data.result, level: 'danger'});
+             return;
+         }
+         $('.eqLogicAction[data-action=save]').click();
+       }
+     });
+  });
+
+  function addFilePath(lang,file_path)
+  {
+    var line = '<div class="form-group">';
+    line += '<span class="col-lg-12 kTradFilePath">';
+    line += init(file_path);
+    line += '</span>';
+    line += '</div>';
+    $('#table_trad_'+ lang + ' fieldset').append(line);
+  }
+
+  function addTrad(tradline) {
+
+    var line = '<div class="form-group kTrad">';
+    line += '<span class="col-md-2 col-lg-1 kTradLine">';
+    line += init(tradline.id);
+    line += '<input class="tradAttr form-control kTradHide" data-l1key="id">';
+    line += '</span>';
+    // line += '<label class="col-lg-3">';
+    // line += init(tradline.file_path);
+    // line += '</label>';
+    line += '<input class="tradAttr form-control kTradHide" data-l1key="file_path">';
+    line += '<span class="col-md-10 col-lg-5 kTradLine">';
+    line += init(tradline.from);
+    line += '</span>';
+    line += '<input class="tradAttr form-control input-sm col-md-10 col-lg-5" data-l1key="to">';
+    line += '<span class="col-md-2 col-lg-1 kTradLine">';
+    line += (init(tradline.unused)==0) ? 'Non' : 'Oui';
+    line += '<i class="fa fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i>';
+    line += '</span>';
+    line += '</div>';
+    $('#table_trad_'+ tradline.lang + ' fieldset').append(line);
+    $('#table_trad_'+ tradline.lang + ' fieldset>div:last').setValues(tradline, '.tradAttr');
+  }
+
+  function deleteAllTrad()
+  {
+     langConf.forEach( function( val ) {
+       $('#table_trad_'+ val.code + ' fieldset').empty();
+     });
+  }
+
+  $(document).ready(function() {
+    $.ajax({// fonction permettant de faire de l'ajax
+      type: "POST", // methode de transmission des données au fichier php
+      url: "plugins/kranslate/core/ajax/kranslate.ajax.php", // url du fichier php
+      data: {
+          action: "langConf"
+      },
+      dataType: 'json',
+      error: function (request, status, error) {
+          handleAjaxError(request, status, error);
+      },
+      success: function (data) { // si l'appel a bien fonctionné
+        if (data.state != 'ok') {
+            $('#div_alert').showAlert({message: data.result, level: 'danger'});
+            return;
+        }
+        langConf = data.result;
+      }
+    });
+
+    $(".eqLogicAttr[data-l1key='logicalId']").change(function(){
+      if ($(this).val()!='')
+      {
+        selectTrad($(this).val());
+      }
+    });
   });

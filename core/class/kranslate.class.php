@@ -305,6 +305,12 @@
       );
       return DB::Prepare($sql, $values, DB::FETCH_TYPE_ALL, PDO::FETCH_ASSOC, null);
     }
+
+    public function getImage()
+    {
+      $plugin_obj = plugin::byId($this->getPlugin());
+      return $plugin_obj->getPathImgIcon();
+    }
   }
 
   class kranslateCmd extends cmd {

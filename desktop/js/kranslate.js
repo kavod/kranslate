@@ -110,6 +110,7 @@
     file_path = '';
     trad_list.sort((a,b) => (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0));
     trad_list.sort((a,b) => (a.file_path > b.file_path) ? 1 : ((b.file_path > a.file_path) ? -1 : 0));
+    trad_list.sort((a,b) => (a.lang > b.lang) ? 1 : ((b.lang > a.lang) ? -1 : 0));
     trad_list.forEach(function(sentence) {
       if (sentence.file_path!=file_path)
       {

@@ -99,18 +99,30 @@
              $('#div_alert').showAlert({message: data.result, level: 'danger'});
              return;
          }
-        deleteAllTrad();
-        file_path = '';
-        data.result.forEach(function(sentence) {
-          if (sentence.file_path!=file_path)
-          {
-            addFilePath(sentence.lang,sentence.file_path);
-            file_path = sentence.file_path;
-          }
-          addTrad(sentence);
-        });
+         buildTrad(data.result);
        }
      });
+  }
+
+  function buildTrad(trad_list)
+  {
+    deleteAllTrad();
+    file_path = '';
+    trad_list.sort((a,b) => (a.from > b.from) ? 1 : ((b.from > a.from) ? -1 : 0));
+    trad_list.sort((a,b) => (a.file_path > b.file_path) ? 1 : ((b.file_path > a.file_path) ? -1 : 0));
+    trad_list.forEach(function(sentence) {
+      if (sentence.file_path!=file_path)
+      {
+        addFilePath(sentence.lang,sentence.file_path);
+        file_path = sentence.file_path;
+      }
+      addTrad(sentence);
+    });
+
+    $('.tradAction[data-action="remove"]').click(function() {
+      $(this).parents().filter('.kTrad').addClass('kTradHide');
+      $(this).parents().filter('.kTrad').find('input[data-l1key="deleted"]').val(1);
+    });
   }
 
   $('#btAdd').on('click', function () {
@@ -218,6 +230,13 @@
     $('#table_trad_'+ lang + ' fieldset').append(line);
   }
 
+  function deleteAllTrad()
+  {
+     langConf.forEach( function( val ) {
+       $('#table_trad_'+ val.code + ' fieldset').empty();
+     });
+  }
+
   function addTrad(tradline) {
 
     var line = '<div class="form-group kTrad">';
@@ -235,18 +254,12 @@
     line += '<input class="tradAttr form-control input-sm col-md-10 col-lg-5" data-l1key="to">';
     line += '<span class="col-md-2 col-lg-1 kTradLine">';
     line += (init(tradline.unused)==0) ? 'Non' : 'Oui';
-    line += '<i class="fa fa-minus-circle pull-right cmdAction cursor" data-action="remove"></i>';
+    line += '<i class="fa fa-minus-circle pull-right tradAction cursor" data-action="remove"></i>';
+    line += '<input class="tradAttr form-control kTradHide" data-l1key="deleted">';
     line += '</span>';
     line += '</div>';
     $('#table_trad_'+ tradline.lang + ' fieldset').append(line);
     $('#table_trad_'+ tradline.lang + ' fieldset>div:last').setValues(tradline, '.tradAttr');
-  }
-
-  function deleteAllTrad()
-  {
-     langConf.forEach( function( val ) {
-       $('#table_trad_'+ val.code + ' fieldset').empty();
-     });
   }
 
   $(document).ready(function() {

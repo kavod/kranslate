@@ -46,7 +46,7 @@
 
     public function getPlugin()
     {
-      log::add(__CLASS__,'debug',"* getPlugin() => ".$this->getConfiguration('plugin',''));
+      //log::add(__CLASS__,'debug',"* getPlugin() => ".$this->getConfiguration('plugin',''));
       return $this->getConfiguration('plugin','');
     }
 
@@ -134,7 +134,7 @@
         $sentences = $this->getSentences($file_path);
         if (!is_null($sentences))
         {
-          $file_relpath = str_replace($this->_rootDir,'plugins'.DIRECTORY_SEPARATOR.$this->getPlugin(),$file_path);
+          $file_relpath = str_replace($this->_rootDir,'plugins',$file_path);
           log::add(__CLASS__,'debug',"Ajout traductions pour $file_relpath");
           $result[$file_relpath] = $sentences;
         }
@@ -174,11 +174,26 @@
         log::add(__CLASS__,'debug',sprintf(__("Actualisation des traductions %s pour %s : %s",__FILE__),$_lang,$plugin,print_r($trad,true)));
         foreach($trad as $tradline)
         {
-          $trad_obj = kranslate_tradLine::byId($tradline['id']);
-          log::add(__CLASS__,'debug',sprintf(__("Traduction : %s",__FILE__),$tradline['to']));
+          if (array_key_exists('id',$tradline))
+          {
+            $trad_obj = kranslate_tradLine::byId($tradline['id']);
+            log::add(__CLASS__,'debug',sprintf(__("Traduction : %s",__FILE__),$tradline['to']));
+          } else {
+            $trad_obj = new kranslate_tradLine();
+            $trad_obj->setPlugin($this->getPlugin());
+            $trad_obj->setLang($_lang);
+            $trad_obj->setFilePath($tradline['file_path']);
+            $trad_obj->setFrom($tradline['from']);
+          }
           $trad_obj->setTo($tradline['to']);
+          $trad_obj->setUnused((array_key_exists('unused',$tradline) ? $tradline['unused'] : 0));
           log::add(__CLASS__,'debug',sprintf(__("Sauvegarde",__FILE__)));
-          $trad_obj->save();
+          if (array_key_exists('deleted',$tradline) && $tradline['deleted']==1)
+          {
+            $trad_obj->remove();
+          } else {
+            $trad_obj->save();
+          }
         }
       } else {
         log::add(__CLASS__,'debug',">Nope");
@@ -188,7 +203,87 @@
     public function initTrad()
     {
       log::add(__CLASS__,'debug',"* initTrad");
-      $this->saveTradAll($this->globalSearch());
+      $kranslate_conf = json_decode(file_get_contents(__DIR__.'/../config/lang.json'),true);
+
+      $scan_content = $this->globalSearch();
+      foreach($kranslate_conf as $lang)
+      {
+        if (config::byKey($lang['code'],$_plugin=__CLASS__,$_default=-1)==1)
+        {
+          $trad = array();
+          $i18n_filepath = $this->getDir().'/core/i18n/'.$lang['code'].'.json';
+          if (file_exists($i18n_filepath))
+          {
+            log::add(__CLASS__,'debug',"Fichier traduction $i18n_filepath trouvé");
+            $i18n_content = json_decode(file_get_contents($i18n_filepath),true);
+            foreach($scan_content as $scan_file_path => $scan_sentences)
+            {
+              $esc_file_path = $scan_file_path;
+              //$esc_file_path = str_replace('/','\/',$scan_file_path);
+              foreach($scan_sentences as $scan_from => $scan_to)
+              {
+                if(array_key_exists($esc_file_path,$i18n_content))
+                {
+                  if (array_key_exists($scan_from,$i18n_content[$esc_file_path]))
+                  {
+                    log::add(__CLASS__,'debug',"Traduction ".$i18n_content[$esc_file_path][$scan_from]." trouvée");
+                    $trad[] = array(
+                      'plugin' => $this->getPlugin(),
+                      'lang' => $lang['code'],
+                      'file_path' => $scan_file_path,
+                      'from' => $scan_from,
+                      'to' => $i18n_content[$esc_file_path][$scan_from],
+                      'unused' => 0
+                    );
+                    continue;
+                  } else {
+                    log::add(__CLASS__,'debug',"Traduction $scan_from non trouvée");
+                  }
+                } else {
+                  log::add(__CLASS__,'debug',"Traduction $esc_file_path non trouvée");
+                }
+
+                $trad[] = array(
+                  'plugin' => $this->getPlugin(),
+                  'lang' => $lang['code'],
+                  'file_path' => $scan_file_path,
+                  'from' => $scan_from,
+                  'to' => $scan_to,
+                  'unused' => 0
+                );
+              }
+            }
+          } else {
+            log::add(__CLASS__,'debug',"Fichier traduction $i18n_filepath n\'existe pas");
+            $trad = $this->i18n_to_obj($lang['code'],$scan_content);
+          }
+          $this->saveTrad($lang['code'],$trad);
+        }
+        else {
+          log::add(__CLASS__,'debug',"Langue " .$lang['code']. " désactivée");
+        }
+      }
+      //$this->saveTradAll($sentences);
+    }
+
+    public function i18n_to_obj($lang,$i18n_content)
+    {
+      $result = array();
+      foreach($i18n_content as $i18n_file_path => $i18n_sentences)
+      {
+        foreach($i18n_sentences as $i18n_from => $i18n_to)
+        {
+          $result[] = array(
+            'plugin' => $this->getPlugin(),
+            'lang' => $lang,
+            'file_path' => $i18n_file_path,
+            'from' => $i18n_from,
+            'to' => $i18n_to,
+            'unused' => 0
+          );
+        }
+      }
+      return $result;
     }
 
     public function deleteTrad()

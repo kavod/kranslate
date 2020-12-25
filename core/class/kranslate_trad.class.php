@@ -110,6 +110,26 @@
         }
       }
     }
+
+    public function toJSON()
+    {
+      $result = array();
+      foreach($this->lines as $obj)
+      {
+        if (!array_key_exists($obj->getFilePath(),$result))
+          $result[$obj->getFilePath()] = array();
+        $result[$obj->getFilePath()][$obj->getFrom()] = $obj->getTo();
+      }
+      return $result;
+    }
+
+    public function toI18nFile()
+    {
+      $i18n_filepath = __DIR__ . '/../../resources/'.$this->getPlugin();
+      $fp = fopen('results.json', 'w');
+      fwrite($fp, json_encode($response));
+      fclose($fp);
+    }
   }
 
   ?>

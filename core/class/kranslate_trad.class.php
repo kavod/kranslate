@@ -111,23 +111,34 @@
       }
     }
 
-    public function toJSON()
+    public function toArray($lang)
     {
       $result = array();
       foreach($this->lines as $obj)
       {
-        if (!array_key_exists($obj->getFilePath(),$result))
-          $result[$obj->getFilePath()] = array();
-        $result[$obj->getFilePath()][$obj->getFrom()] = $obj->getTo();
+        if ($obj->getLang()== $lang)
+        {
+          if (!array_key_exists($obj->getFilePath(),$result))
+            $result[$obj->getFilePath()] = array();
+          $result[$obj->getFilePath()][$obj->getFrom()] = $obj->getTo();
+        }
       }
       return $result;
     }
 
-    public function toI18nFile()
+    public function toJson($lang)
     {
-      $i18n_filepath = __DIR__ . '/../../resources/'.$this->getPlugin();
-      $fp = fopen('results.json', 'w');
-      fwrite($fp, json_encode($response));
+      return json_encode($this->toArray($lang));
+    }
+
+    public function toI18nFile($lang)
+    {
+      $i18n_dirpath = __DIR__ . '/../../resources/'.$this->getPlugin();
+      if (!file_exists($i18n_dirpath))
+        mkdir($i18n_dirpath);
+      $i18n_filepath = $i18n_dirpath .'/'.$lang.'.json'
+      $fp = fopen($i18n_filepath, 'w');
+      fwrite($fp, $this->toJson($lang));
       fclose($fp);
     }
   }

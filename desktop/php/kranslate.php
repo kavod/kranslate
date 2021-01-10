@@ -130,6 +130,7 @@ if (!isConnect('admin')) {
  				</div>
         <div class="col-lg-6">
           <a class="btn btn-default" id="btScan"><i class="fa fa-search"></i> {{Scanner les traductions}}</a>
+          <a class="btn btn-default" id="btToZip"><i class="fa fa-zip"></i> {{Télécharger les fichiers i18n}}</a>
           <a class="btn btn-danger" id="btDelete"><i class="fa fa-trash"></i> {{Supprimer toutes les traductions}}</a>
         </div>
  			</div>
@@ -149,6 +150,7 @@ if (!isConnect('admin')) {
     			<fieldset>
 					</fieldset>
         </form>
+        <a class="btn btn-default kranslate_download" lang="<?php echo $lang['code']; ?>"><i class="fa fa-download"></i> {{Télécharger la traduction}}</a>
      </div>
    <?php
         }

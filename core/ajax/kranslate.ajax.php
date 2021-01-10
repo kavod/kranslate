@@ -66,6 +66,23 @@
     }
     ajax::success();
   }
+  elseif(init('action') == 'toJson') {
+    $plugin = eqLogic::byLogicalId(init('plugin'),'kranslate');
+    $json = $plugin->toJson(init('lang'));
+    header('Content-disposition: attachment; filename=' . init('lang') . '.json');
+    header('Content-type: application/json');
+    die($json);
+  }
+  elseif(init('action') == 'toI18nFile') {
+    $plugin = eqLogic::byLogicalId(init('plugin'),'kranslate');
+    $plugin->toI18nFile(init('lang'));
+    ajax::success('/plugins/kranslate/resources/'.init('plugin').'/'.init('lang').'.json');
+  }
+  elseif(init('action') == 'toZip') {
+    $plugin = eqLogic::byLogicalId(init('plugin'),'kranslate');
+    $plugin->toZip();
+    ajax::success('/plugins/kranslate/resources/'.init('plugin').'_i18n.zip');
+  }
 
   throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
   /*     * *********Catch exeption*************** */

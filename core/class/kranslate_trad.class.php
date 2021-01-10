@@ -23,12 +23,13 @@
 
   class kranslate_trad {
     private $plugin;
-    private $lines;
+    private $lines = array();
 
     public static function all($plugin) {
       $trad = new kranslate_trad();
-      $trad->getPlugin($plugin);
+      $trad->setPlugin($plugin);
       $trad->addLines(kranslate_tradLine::byPlugin($plugin));
+      return $trad;
     }
 
     public function save() {
@@ -83,7 +84,7 @@
 
     public function addLines($lines)
     {
-      $this->lines += $lines;
+      $this->lines = array_merge($this->lines,$lines);
     }
 
     public function loadFromArray($lang,$array,$erase=false,$unused=null)
@@ -128,18 +129,27 @@
 
     public function toJson($lang)
     {
-      return json_encode($this->toArray($lang));
+      return json_encode($this->toArray($lang),JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     }
 
     public function toI18nFile($lang)
     {
-      $i18n_dirpath = __DIR__ . '/../../resources/'.$this->getPlugin();
-      if (!file_exists($i18n_dirpath))
-        mkdir($i18n_dirpath);
-      $i18n_filepath = $i18n_dirpath .'/'.$lang.'.json'
+      // $i18n_dirpath = __DIR__ . '/../../resources/'.$this->getPlugin();
+      // if (!file_exists($i18n_dirpath))
+      //   mkdir($i18n_dirpath);
+      // $i18n_filepath = $i18n_dirpath .'/'.$lang.'.json';
+      $i18n_filepath = $this->getI18nPath($lang);
       $fp = fopen($i18n_filepath, 'w');
       fwrite($fp, $this->toJson($lang));
       fclose($fp);
+    }
+
+    public function getI18nPath($lang)
+    {
+      $i18n_dirpath = __DIR__ . '/../../resources/'.$this->getPlugin();
+      if (!file_exists($i18n_dirpath))
+        mkdir($i18n_dirpath);
+      return $i18n_dirpath .'/'.$lang.'.json';
     }
   }
 

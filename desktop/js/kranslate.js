@@ -194,6 +194,67 @@
      });
   });
 
+  $('.kranslate_download').on('click', function() {
+   $.ajax({// fonction permettant de faire de l'ajax
+       type: "POST", // methode de transmission des données au fichier php
+       url: "plugins/kranslate/core/ajax/kranslate.ajax.php", // url du fichier php
+       data: {
+           action: "toI18nFile",
+           plugin: $(".eqLogicAttr[data-l1key='logicalId']").val(),
+           lang: $(this).attr('lang')
+       },
+       dataType: 'json',
+       error: function (request, status, error) {
+           handleAjaxError(request, status, error);
+       },
+       success: function (data) { // si l'appel a bien fonctionné
+         if (data.state != 'ok') {
+             $('#div_alert').showAlert({message: data.result, level: 'danger'});
+             return;
+         }
+         downloadFile(data.result);
+       }
+     });
+  });
+
+  $('#btToZip').on('click', function() {
+   $.ajax({// fonction permettant de faire de l'ajax
+       type: "POST", // methode de transmission des données au fichier php
+       url: "plugins/kranslate/core/ajax/kranslate.ajax.php", // url du fichier php
+       data: {
+           action: "toZip",
+           plugin: $(".eqLogicAttr[data-l1key='logicalId']").val()
+       },
+       dataType: 'json',
+       error: function (request, status, error) {
+           handleAjaxError(request, status, error);
+       },
+       success: function (data) { // si l'appel a bien fonctionné
+         if (data.state != 'ok') {
+             $('#div_alert').showAlert({message: data.result, level: 'danger'});
+             return;
+         }
+         downloadFile(data.result);
+       }
+     });
+  });
+
+  function downloadFile(urlToSend) {
+     var req = new XMLHttpRequest();
+     req.open("GET", urlToSend, true);
+     req.responseType = "blob";
+     req.onload = function (event) {
+         var blob = req.response;
+         var fileName = urlToSend.replace(/^.*[\\\/]/, '')
+         var link=document.createElement('a');
+         link.href=window.URL.createObjectURL(blob);
+         link.download=fileName;
+         link.click();
+     };
+
+     req.send();
+ }
+
   $('#btSave').on('click',function() {
     var trad = {};
     langConf.forEach( function( val ) {

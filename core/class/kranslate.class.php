@@ -164,6 +164,59 @@
       }
     }
 
+    public function toJson($_lang)
+    {
+      log::add(__CLASS__,'debug',"* toJson $_lang");
+      $plugin = $this->getConfiguration('plugin','');
+      $trad_obj = kranslate_trad::all($plugin);
+      return $trad_obj->toJson($_lang);
+    }
+
+    public function toI18nFile($_lang)
+    {
+      log::add(__CLASS__,'debug',"* toJson $_lang");
+      $plugin = $this->getConfiguration('plugin','');
+      $trad_obj = kranslate_trad::all($plugin);
+      $trad_obj->toI18nFile($_lang);
+    }
+
+    public function toZip()
+    {
+      log::add(__CLASS__,'debug',"* toZip");
+      $plugin = $this->getConfiguration('plugin','');
+      $trad_obj = kranslate_trad::all($plugin);
+
+      $zip = new ZipArchive();
+      $filename = __DIR__ . '/../../resources/'.$this->getPlugin().'_i18n.zip';
+      if ($zip->open($filename, ZipArchive::CREATE)!==TRUE) {
+          exit("Impossible d'ouvrir le fichier <$filename>\n");
+      }
+
+      $kranslate_conf = json_decode(file_get_contents(__DIR__.'/../config/lang.json'),true);
+      foreach($kranslate_conf as $lang)
+      {
+        $i18n_file = $trad_obj->getI18nPath($lang['code']);
+        if (config::byKey($lang['code'],$_plugin=__CLASS__,$_default=-1)==1)
+        {
+          $trad_obj->toI18nFile($lang['code']);
+          $zip->addFile($i18n_file,"/".$lang['code'].".json");
+        } else {
+          if (is_file($i18n_file))
+            unlink($i18n_file);
+        }
+      }
+      $zip->close();
+
+    }
+
+    public function getI18nPath($lang)
+    {
+      $i18n_dirpath = __DIR__ . '/../../resources/'.$this->getPlugin();
+      if (!file_exists($i18n_dirpath))
+        mkdir($i18n_dirpath);
+      return $i18n_dirpath .'/'.$lang.'.json';
+    }
+
     public function saveTrad($_lang,$trad)
     {
       log::add(__CLASS__,'debug',"* saveTrad $_lang");

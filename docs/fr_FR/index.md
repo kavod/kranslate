@@ -17,7 +17,7 @@ Puis, rendez-vous sur la page du plugin (Programmation > kranslate) pour appuyer
 
 Sélectionnez le plugin à traduire dans la liste déroulante
 
-![Sélection du plugin à traduire](/docs/images/selection_plugin.png)
+![Sélection du plugin à traduire](/kranslate/images/selection_plugin.png)
 
 Le plugin apparait comme un équipement. Cliquez dessus.
 La page est composée d'un premier onglets avec plusieurs boutons, et d'autant d'autres onglets que de langues que vous avez précédemment sélectionné dans votre configuration principale.

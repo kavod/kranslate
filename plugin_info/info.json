@@ -1,7 +1,7 @@
 {
 	"id" : "kranslate",
 	"name" : "Kranslate",
-	"description" : "Plugin destiné au développeurs assistant la traduction des plugins Jeedom",
+	"description" : "Plugin destiné au développeurs assistant la traduction des plugins Jeedom. Il s'agit d'une ***version beta*** pour le moment.",
 	"licence" : "AGPL",
 	"author" : "kavod",
 	"require" : "3.3",

@@ -7,22 +7,22 @@ Il permet la génération automatique des fichiers contenus dans le répertoire 
 ## Mode d'emploi
 Une fois le plugin activé, sélectionnez les langues que vous souhaitez gérer.
 
-![Sélection des langues gérées](/docs/images/selection_langues.png)
+![Sélection des langues gérées](https://kavod.github.io/kranslate/images/selection_langues.png)
 
 N'oubliez pas de sauvegarder !
 
 Puis, rendez-vous sur la page du plugin (Programmation > kranslate) pour appuyer sur le bouton "Ajouter plugin".
 
-![Ajouter plugin](/docs/images/ajout_plugin.png)
+![Ajouter plugin](https://kavod.github.io/kranslate/images/ajout_plugin.png)
 
 Sélectionnez le plugin à traduire dans la liste déroulante
 
-![Sélection du plugin à traduire](/kranslate/images/selection_plugin.png)
+![Sélection du plugin à traduire](https://kavod.github.io/kranslate/images/selection_plugin.png)
 
 Le plugin apparait comme un équipement. Cliquez dessus.
 La page est composée d'un premier onglets avec plusieurs boutons, et d'autant d'autres onglets que de langues que vous avez précédemment sélectionné dans votre configuration principale.
 
-![Overview](/docs/images/overview.png)
+![Overview](https://kavod.github.io/kranslate/images/overview.png)
 
 Utilisez le bouton "Scanner les traductions" pour identifier toutes les "phrases" à traduire dans le plugin.
 Techniquement, kranslate va identifier toutes les occurrences de type ```{{blablabla}}``` et ```__('blablabla',__FILE__)``` des pages php et js.

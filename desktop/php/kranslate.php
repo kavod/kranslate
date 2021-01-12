@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
- error_reporting(-1);
- ini_set('display_errors', 'On');
+ // error_reporting(-1);
+ // ini_set('display_errors', 'On');
  $kranslate_conf = json_decode(file_get_contents(__DIR__.'/../../core/config/lang.json'),true);
 
 if (!isConnect('admin')) {

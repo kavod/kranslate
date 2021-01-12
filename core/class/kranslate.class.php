@@ -18,8 +18,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-  error_reporting(-1);
-  ini_set('display_errors', 'On');
+  // error_reporting(-1);
+  // ini_set('display_errors', 'On');
   define('KRANSLATE_ROOT_DIR','..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..');
   //mb_detect_order("ISO-8859-1,UTF-8");
 
